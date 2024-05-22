@@ -22,6 +22,7 @@ def get_volume_range():
 # Get volume range and volume object
 vol_range, volume = get_volume_range()
 min_vol, max_vol = vol_range[0], vol_range[1]
+print(vol_range)
 
 # Initialize video capture
 cap = cv2.VideoCapture(0)
@@ -48,6 +49,7 @@ while cap.isOpened():
             # Get coordinates of the tip of the thumb and index finger
             thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
             index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
+            
 
             # Calculate the distance between the tips
             thumb_tip_coords = (int(thumb_tip.x * frame.shape[1]), int(thumb_tip.y * frame.shape[0]))
@@ -61,13 +63,14 @@ while cap.isOpened():
 
             # Map the distance to the volume range
             vol = np.interp(distance, [30, 300], [min_vol, max_vol])
+            
             volume.SetMasterVolumeLevel(vol, None)
 
             # Display the volume level on the frame
             cv2.putText(frame, f'Volume: {int(np.interp(vol, [min_vol, max_vol], [0, 100]))}%', (50, 50), 
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
 
-    cv2.imshow('Hand Gesture Volume Control', frame)
+    cv2.imshow('Press Q to Exit', frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
